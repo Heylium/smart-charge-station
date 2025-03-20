@@ -44,9 +44,9 @@ public class MqttClientUtils {
         if (client == null) {
             try {
                 client = new MqttClient(conf.getHost(), conf.getClientId());
-                log.info(">>>>>paho模式 MqttClient生成成功<<<<<");
+                log.info(">>>>> paho模式 MqttClient生成成功 <<<<<");
             } catch (MqttException e) {
-                log.info(">>>>>paho模式 MqttClient生成失败<<<<<");
+                log.info(">>>>> paho模式 MqttClient生成失败 <<<<<");
                 throw new RuntimeException(e);
             }
         }
@@ -62,10 +62,10 @@ public class MqttClientUtils {
                 client.connect(options);
                 //设置回调类
                 client.setCallback(new Callback());
-                log.info(">>>>>paho模式 mqtt连接成功<<<<<");
+                log.info(">>>>> paho模式 mqtt连接成功 <<<<<");
             }
         } catch (MqttException e) {
-            log.error(">>>>>paho模式 mqtt连接失败<<<<<");
+            log.error(">>>>> paho模式 mqtt连接失败 <<<<<");
             log.error(e.getMessage());
             throw new RuntimeException(e);
         }
@@ -82,9 +82,9 @@ public class MqttClientUtils {
 
         try {
             client.publish(topic, mqttMessage);
-            log.info(">>>>>paho模式 mqtt发送消息成功 <<<<<");
+            log.info(">>>>> paho模式 mqtt发送消息成功 <<<<<");
         } catch (MqttException e) {
-            log.info(">>>>>paho模式 mqtt发送消息失败 <<<<<");
+            log.info(">>>>> paho模式 mqtt发送消息失败 <<<<<");
             throw new RuntimeException(e);
         }
     }
@@ -97,9 +97,9 @@ public class MqttClientUtils {
 
         try {
             client.subscribe(topic, listener);
-            log.info(">>>>>paho模式 mqtt订阅主题成功 <<<<<");
+            log.info(">>>>> paho模式 mqtt订阅主题成功 <<<<<");
         } catch (MqttException e) {
-            log.info(">>>>>paho模式 mqtt订阅消息失败 <<<<<");
+            log.info(">>>>> paho模式 mqtt订阅消息失败 <<<<<");
             throw new RuntimeException(e);
         }
     }
@@ -107,7 +107,7 @@ public class MqttClientUtils {
     public void disconnect() {
         try {
             client.disconnect();
-            log.info(">>>>>paho模式 mqtt断开连接 <<<<<");
+            log.info(">>>>> paho模式 mqtt断开连接 <<<<<");
         } catch (MqttException e) {
             throw new RuntimeException(e);
         }
