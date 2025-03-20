@@ -1,0 +1,35 @@
+# SpringBoot 端口
+server:
+  port: 8085
+# SpringBoot 日志配置
+logging:
+  config: classpath:logback-spring.xml
+
+
+# MQTT客户端配置
+mqtt:
+  # MQTT服务器地址 (tcp://ip:端口)
+  host: tcp://127.0.0.1:1883
+  # 客户端ID
+  # 注：视频没有将两种模式的客户端ID设置分开, 会造成冲突, 客户端连接不上
+  # Paho模式id
+  client_id_pahoMode: imooc_mqtt_tcp_pahoMode
+  # 工厂模式id
+  client_id_factoryMode: imooc_mqtt_tcp_factoryMode
+  # 订阅主题
+  topic: io_test
+  options:
+    # MQTT服务器用户名
+    # 项目emqx连接没有设用户名
+    user_name: admin
+    # MQTT服务器密码
+    # 项目emqx连接没有设密码
+    password: imooc2024
+    # 设置为false表示服务器会保留客户端的连接记录，
+    # 客户端重连之后能获取到服务器在客户端断开连接期间推送的消息
+    clean_session: false
+
+Netty:
+  server:
+    host: Netty
+    port: 1919

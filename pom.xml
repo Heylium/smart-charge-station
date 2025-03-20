@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.helium</groupId>
+    <artifactId>smart-charge-station</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>charge-demo</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!-- SpringBoot 版本 -->
+        <spring.boot.version>3.0.2</spring.boot.version>
+        <!-- spring integration 版本 -->
+        <spring.integration.version>6.2.6</spring.integration.version>
+        <!-- netty 版本 -->
+        <netty-all.version>4.1.86.Final</netty-all.version>
+        <!-- iotdb 版本 -->
+        <iotdb.version>1.3.2</iotdb.version>
+        <!-- lombok 版本 -->
+        <lombok.version>1.18.24</lombok.version>
+        <!-- protobuf 版本 -->
+        <protobuf-java-util.version>4.28.3</protobuf-java-util.version>
+        <!-- okhttp 版本 -->
+        <okhttp.version>4.9.3</okhttp.version>
+        <!-- fastjson2 版本 -->
+        <fastjson.version>2.0.33</fastjson.version>
+    </properties>
+
+    <!-- 全局导入 -->
+    <dependencies>
+        <!-- 简化Java代码 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 单元测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <!-- 子模块声明才真正的导入 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- SpringBoot -->
+
+            <!--
+            SpringBoot 导入的2种方式：
+            1. 引入spring-boot-starter-parent ( <parent></parent> )
+            2. 引入spring-boot-dependencies  ( <dependency></dependency> )
+        -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- MQTT -->
+            <!--
+                类似于 Spring Data 针对数据库访问过程的抽象 ( 统一的数据库访问方式 )
+                Spring Integration 是 Spring 针对信息流的抽象 ( 消息传递的规范 )
+                支持 MQTT,Mail,AMQP 协议
+
+                Spring Integration实现mqtt客户端所使用类库：
+                eclipse.paho.client.mqttV3
+
+             -->
+
+
+            <!-- Spring Integration 核心包 -->
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-core</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
+            <!--Spring Integration 流支持依赖包  -->
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-stream</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
+            <!-- Spring Integration 的MQTT 依赖包 -->
+            <dependency>
+                <groupId>org.springframework.integration</groupId>
+                <artifactId>spring-integration-mqtt</artifactId>
+                <version>${spring.integration.version}</version>
+            </dependency>
+            <!-- SpringBoot 整合 Spring Integration 依赖包 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-integration</artifactId>
+                <version>${spring.boot.version}</version>
+            </dependency>
+
+            <!-- Netty -->
+            <dependency>
+                <groupId>io.netty</groupId>
+                <artifactId>netty-all</artifactId>
+                <version>${netty-all.version}</version>
+            </dependency>
+
+
+            <!-- protobuf 工具包 -->
+            <dependency>
+                <groupId>com.google.protobuf</groupId>
+                <artifactId>protobuf-java-util</artifactId>
+                <version>${protobuf-java-util.version}</version>
+            </dependency>
+
+            <!-- iotdb Session -->
+            <dependency>
+                <groupId>org.apache.iotdb</groupId>
+                <artifactId>iotdb-session</artifactId>
+                <version>${iotdb.version}</version>
+            </dependency>
+
+            <!-- OkHttp 是一个功能强大、高性能的 HTTP 客户端库 -->
+            <dependency>
+                <groupId>com.squareup.okhttp3</groupId>
+                <artifactId>okhttp</artifactId>
+                <version>${okhttp.version}</version>
+            </dependency>
+
+            <!-- json2 -->
+            <dependency>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
+                <version>${fastjson.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+</project>
