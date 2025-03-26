@@ -1,0 +1,6 @@
+# 1. 拉取镜像
+sudo docker pull emqx/mqttx-web:v1.10.1
+
+# 2. 运行mqttx客户端
+sudo docker run --rm --name mqttx-web -p 80:80 emqx/mqttx-web:v1.10.1
+
