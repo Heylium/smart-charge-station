@@ -32,7 +32,7 @@ public class MqttClientUtils {
 
     private MqttConnectOptions options;
 
-    @PostConstruct
+    // @PostConstruct
     public void init() {
         createClient();
         getOptions();

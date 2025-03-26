@@ -7,6 +7,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
@@ -32,6 +33,7 @@ import org.springframework.messaging.MessagingException;
  *
  *
  * *********************/
+@Configuration // 需要将factory类设置为Configuration以应用内部的bean
 @EnableIntegration
 @Slf4j
 public class FactoryBuilder {
@@ -39,12 +41,14 @@ public class FactoryBuilder {
     @Resource
     private MqttProps props;
 
+
     /**
      * 获取Mqtt客户端
      * @return
      */
     @Bean
     public MqttPahoClientFactory getFactory() {
+
         /* **********************
          *
          * 为什么要使用工厂模式创建对象
@@ -54,16 +58,20 @@ public class FactoryBuilder {
          *
          *
          * *********************/
-        DefaultMqttPahoClientFactory client = new DefaultMqttPahoClientFactory();
+
+        DefaultMqttPahoClientFactory client =
+                new DefaultMqttPahoClientFactory();
 
         MqttConnectOptions options = props.getOptions();
-
-        // 配置连接地址
+        //配置连接地址
         options.setServerURIs(new String[]{props.getHost()});
+
         client.setConnectionOptions(options);
 
         return client;
+
     }
+
     /* **********************
      *
      *
@@ -82,23 +90,29 @@ public class FactoryBuilder {
      * *********************/
 
 
+
     //=============== 信息通道 =================//
+
 
     /**
      * 发送通道
      */
     @Bean(name = MqttConstants.OUT_CHANNEL)
     public MessageChannel outChannel() {
+
         return new DirectChannel();
     }
+
 
     /**
      * 接收通道
      */
     @Bean(name = MqttConstants.IN_CHANNEL)
     public MessageChannel inChannel() {
+
         return new DirectChannel();
     }
+
 
     //=============== 发送消息 =================//
 
@@ -116,9 +130,7 @@ public class FactoryBuilder {
      *
      * *********************/
 
-    /**
-     *
-     */
+
     /* **********************
      *
      * @ServiceActivator的作用：
@@ -131,18 +143,17 @@ public class FactoryBuilder {
 
         MqttPahoMessageHandler messageHandler =
                 new MqttPahoMessageHandler(
-                        props.getClientIdFactoryMode(), getFactory());
+                        //注意这里和视频有所改动
+                        props.getClientIdFactoryMode(),getFactory());
 
-        log.info(">>>>> 工厂模式发送消息处理器生成状态 "+messageHandler.toString());
+        log.info(">>>>>工厂模式发送消息处理器生成状态 "+messageHandler.toString());
 
         return messageHandler;
     }
 
+
     //=============== 接收消息 =================//
 
-    /**
-     *
-     */
     /* **********************
      *
      * Spring Integration 接收消息的步骤：
@@ -153,12 +164,19 @@ public class FactoryBuilder {
      * 4. 设置订阅主题的适配器
      *
      * *********************/
+
+
     @Bean
     @ServiceActivator(inputChannel = MqttConstants.IN_CHANNEL)
-    public MessageHandler inHandler() {
-        return message -> {
-            // 接收消息的处理业务逻辑
-            log.info(message.getPayload().toString());
+    public MessageHandler inHandler(){
+
+        return new MessageHandler() {
+            @Override
+            public void handleMessage(Message<?> message) throws MessagingException {
+
+                //接收消息的处理业务逻辑
+                log.info(message.getPayload().toString());
+            }
         };
     }
 
@@ -167,19 +185,21 @@ public class FactoryBuilder {
      */
     @Bean
     public MessageProducer getAdapter() {
+
         MqttPahoMessageDrivenChannelAdapter adapter =
                 new MqttPahoMessageDrivenChannelAdapter(
+                        //注意这里和视频有所改动
                         props.getClientIdFactoryMode(),
                         getFactory(),
                         props.getTopic()
                 );
 
-        // 设置转换器
+        //设置转换器
         adapter.setConverter(new DefaultPahoMessageConverter());
-        // 设置订阅通道
+        //设置订阅通道
         adapter.setOutputChannel(inChannel());
 
-        log.info(">>>>> 工厂模式订阅主题适配器生成状态 " + adapter.toString());
+        log.info(">>>>>工厂模式订阅主题适配器生成状态 "+adapter.toString());
 
         return adapter;
     }

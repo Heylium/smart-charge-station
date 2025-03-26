@@ -22,6 +22,14 @@ import org.springframework.messaging.handler.annotation.Header;
 @MessagingGateway(defaultRequestChannel = MqttConstants.OUT_CHANNEL)
 public interface MqttService {
 
+    /* **********************
+     *
+     * 注意：
+     * topic这个参数，
+     * 必须使用@Header(MqttHeaders.TOPIC)修饰
+     * 视频没有讲解这个
+     *
+     * *********************/
 
     // 发送消息
     void send(@Header(MqttHeaders.TOPIC)String topic, String message);
