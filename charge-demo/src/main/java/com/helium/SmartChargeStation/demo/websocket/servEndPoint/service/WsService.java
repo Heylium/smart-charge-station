@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 //并且要将 @EnableWebSocket 注解注释掉
 //@EnableWebSocket在 com.imooc.SmartChargeStation.demo.WebSocketApplication
 //=======
-@ServerEndpoint("/ws/server")
+// @ServerEndpoint("/ws/server")
 public class WsService {
     /* **********************
      *
