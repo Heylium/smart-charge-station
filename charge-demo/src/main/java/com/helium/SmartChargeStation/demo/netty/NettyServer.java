@@ -5,11 +5,13 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
+import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
@@ -107,7 +109,46 @@ public class NettyServer {
                                 .addLast(new ImoocServerHeartBeatHandler())
                                 ;
                     }
-                })
-        ;
+                });
+
+        //绑定服务器直到绑定成功为止
+        ChannelFuture future = null;
+        try {
+            future = bootstrap.bind(port).sync();
+            log.info(">>>>> Netty 服务器监听的端口：{}", port);
+
+            if (future.isSuccess()) {
+                log.info(">>>>> Netty 服务器启动成功");
+            }
+            future.channel().closeFuture().sync();
+        }
+        catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        finally {
+            log.info(">>>>> Netty服务端关闭....");
+            // 优雅关闭组件
+            destroy();
+        }
+    }
+
+    /**
+     * Netty 关闭
+     */
+    @PreDestroy
+    public void destroy() {
+        try {
+            if (boss != null) {
+                boss.shutdownGracefully().sync();
+            }
+            if (worker != null) {
+                worker.shutdownGracefully().sync();
+            }
+            if (channel != null) {
+                channel.closeFuture().syncUninterruptibly();
+            }
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
